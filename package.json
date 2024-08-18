@@ -1,0 +1,19 @@
+{
+  "name": "digital-ocean-droplet",
+  "version": "1.0.0",
+  "description": "A terraform wrapper for a basic VM configuration using Ansible",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/easyweb-devops/terraform-digital_ocean-droplet.git"
+  },
+  "author": "Giorgos Diamadis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/easyweb-devops/terraform-digital_ocean-droplet/issues"
+  },
+  "homepage": "https://github.com/easyweb-devops/terraform-digital_ocean-droplet#readme"
+}
