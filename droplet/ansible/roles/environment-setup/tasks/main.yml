@@ -1,0 +1,58 @@
+---
+#- name: Wait for cloud-init / user-data to finish
+#  command: cloud-init status --wait
+#  register: cloud_init_status
+#  until: cloud_init_status.stdout.find -1
+#  changed_when: false
+- name: "Reconfigure dpkg"
+  shell: apt install -f
+- name: 'Install aptitude'
+  apt:
+    name: aptitude
+    state: latest
+
+- name: Apt update / upgrade
+  apt:
+    upgrade: yes
+- name: Install required system packages
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    state: latest
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+- name: Update apt and install docker-ce
+  apt:
+    name: docker-ce
+    state: latest
+- name: Install Docker compose
+  apt:
+    name: docker-compose-plugin
+    state: present
+- name: "1. Uninstall HTTPD/Apache"
+  apt:
+    name: httpd
+    autoremove: yes
+    state: absent
+- name: "1. Uninstall HTTPD/Apache2"
+  apt:
+    name: apache2
+    autoremove: yes
+    state: absent
+- name: Install Nginx
+  package:
+    name: nginx
+    state: present
+

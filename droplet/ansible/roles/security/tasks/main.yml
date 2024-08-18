@@ -1,0 +1,61 @@
+---
+#  - name: Set up environment variables
+#    lineinfile:
+#      path: "/etc/environment"
+#      state: present
+#      line: "{{ item }}"
+#
+#    with_items: "{{ variables }}"
+#- name: Install UFW firewall
+#  apt: name=ufw state=latest
+#
+#- name: 'Enable UFW'
+#  ufw:
+#    state: enabled
+#- name: 'Configure UFW'
+#  ufw:
+#    rule: allow
+#    port: "{{ item }}"
+#  with_items:
+#    - 22
+#    - 80
+#    - 443
+#- name: Harden system settings
+#  lineinfile:
+#    dest: /etc/sysctl.conf
+#    regexp: "{{ item.regexp }}"
+#    line: "{{ item.line }}"
+#  with_items:
+#    - { regexp: "^#?net.ipv4.ip_forward", line: "net.ipv4.ip_forward = 0" }
+#    - { regexp: "^#?net.ipv4.conf.all.log_martians", line: "net.ipv4.conf.all.log_martians = 1" }
+#  notify: apply sysctl
+- name: Install security packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - fail2ban
+  notify: restart services
+- name: Enable automatic security updates
+  apt:
+    name: unattended-upgrades
+    state: present
+  notify: restart services
+- name: Disable Password Authentication
+#  TODO: Change to look for PasswordAuthentication set to yes on /ech/ssh/sshd_config.d/*.conf files
+  lineinfile:
+    dest=/etc/ssh/sshd_config
+    regexp='^PasswordAuthentication'
+    line="PasswordAuthentication no"
+    state=present
+    backup=yes
+
+- name: Disable Root Login
+  lineinfile:
+    dest=/etc/ssh/sshd_config
+    regexp='^PermitRootLogin'
+    line="PermitRootLogin no"
+    state=present
+    backup=yes
+  notify:
+    - restart ssh

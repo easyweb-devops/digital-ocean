@@ -1,0 +1,40 @@
+---
+- hosts: localhost
+  user: "{{host_user | default('c774a7d8904f11eeb9d10242ac120002')}}"
+  vars_files:
+    - vars/fingerprints.yml
+    - vars/users.yml
+  roles:
+    - role: roles/create-users
+      vars:
+        ssh_path: ~/.ssh
+      tags: ["user-create"]
+
+- hosts: all
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars_files:
+    - vars/users.yml
+  roles:
+    - role: roles/add-users
+      vars:
+        default_password: "{{ '7Z8fuodH_.8DG--Qd2MyKD9@mMDQYWuncBF9o_VNMz_dd*XeRg' | password_hash }}"
+    - role: roles/environment-setup
+    - role: roles/security
+  handlers:
+    - name: restart ssh
+      service: name=ssh
+        state=restarted
+    - name: apply sysctl
+      command: sysctl -p
+    - name: restart services
+      service:
+        name: "{{ item }}"
+        state: restarted
+      with_items:
+        - fail2ban
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded

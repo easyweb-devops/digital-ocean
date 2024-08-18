@@ -1,0 +1,7 @@
+---
+- name: create user keypair(s)
+  command: /usr/bin/ssh-keygen -b 2048 -f {{ item }} -t rsa -N "" chdir={{ssh_path}} creates={{ssh_path}}/{{ item }}
+  with_items: "{{ users }}"
+- name: "Add fingerprint"
+  shell: ssh-keyscan {{ item }} >> ~/.ssh/known_hosts
+  with_items: "{{ ips }}"

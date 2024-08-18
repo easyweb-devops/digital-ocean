@@ -1,0 +1,10 @@
+.idea
+hosts*
+.terraform
+.terraform.lock.hcl
+terraform.tfstate*
+instructions.txt
+.env.*
+*.tfvars
+infrastructure/digital-ocean/sta.tfvars
+sudo_password.txt
