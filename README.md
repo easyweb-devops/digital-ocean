@@ -26,23 +26,15 @@ This Terraform module serves as a wrapper for provisioning and managing resource
 ### Example
 
 ```hcl
-module "digitalocean_infrastructure" {
-  source = "git::https://github.com/your-username/digitalocean-terraform-wrapper.git"
-
-  # Droplet settings
-  droplet_count     = 2
-  droplet_size      = "s-1vcpu-1gb"
-  region            = "nyc3"
-  ssh_keys          = ["your-ssh-key-id"]
-
-  # VPC settings
-  vpc_name          = "my-vpc"
-  vpc_description   = "VPC for my project"
-
-  # Load Balancer settings
-  enable_load_balancer = true
-  load_balancer_name   = "my-lb"
-
-  # DNS settings
-  domain_name       = "example.com"
+module "droplet" {
+  depends_on    = [module.vpc]
+  source        = "../modules/digital_ocean_modules/droplet"
+  do_sshKey     = var.do_sshKey
+  environment   = var.environment
+  project_name  = var.project_name
+  server        = var.server
+  vpc_id        = module.vpc.vpc_id
+  sudo_password = var.sudo_password
 }
+```
+terraform apply -var-file="xxx.tfvars" -var "do_sshKey=~/.ssh/xxx" -var "do_token=xxx"
