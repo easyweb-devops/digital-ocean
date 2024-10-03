@@ -1,6 +1,6 @@
 {
   "name": "digital-ocean-droplet",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A terraform wrapper for a basic VM configuration using Ansible",
   "main": "index.js",
   "scripts": {
